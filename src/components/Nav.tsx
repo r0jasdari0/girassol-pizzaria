@@ -19,6 +19,8 @@ export const Nav = ({ onCart }: { onCart: () => void }) => {
   const { items, pulse } = useCart();
   const reduce = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
+  /** Se existir public/logo.png (o logotipo oficial), usa ele; senão, a marca em SVG. */
+  const [logoOk, setLogoOk] = useState(true);
   const count = itemCount(items);
 
   useEffect(() => {
@@ -32,8 +34,14 @@ export const Nav = ({ onCart }: { onCart: () => void }) => {
     <header className={`nav ${scrolled ? "is-scrolled" : ""}`}>
       <div className="nav__inner">
         <a href="#top" className="nav__brand" aria-label="Girassol">
-          <SunflowerMark size={30} />
-          <span>Girassol</span>
+          {logoOk ? (
+            <img className="nav__logo" src={`${import.meta.env.BASE_URL}logo.png`} alt="Girassol Pizzaria" onError={() => setLogoOk(false)} />
+          ) : (
+            <>
+              <SunflowerMark size={30} />
+              <span>Girassol</span>
+            </>
+          )}
         </a>
 
         <nav className="nav__links" aria-label="Seções">

@@ -2641,3 +2641,10 @@ small {
     font-size: 13px;
   }
 }
+
+/* logotipo oficial na barra (public/logo.png), se existir */
+.nav__logo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
