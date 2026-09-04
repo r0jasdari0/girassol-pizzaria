@@ -8,6 +8,7 @@ import { AcaiPreview } from "./AcaiPreview";
 import { Builder } from "./Builder";
 import { CheckIcon } from "./Icons";
 import { Price } from "./Price";
+import { SizePicker } from "./SizePicker";
 
 type Props = {
   initial?: Partial<Pick<AcaiItem, "baseId" | "sizeId" | "toppingIds" | "recipeId">>;
@@ -89,15 +90,18 @@ export const AcaiBuilder = ({ initial, editing, onClose }: Props) => {
           <h3 className="bstep__title">{t.ab_step_size}</h3>
           <span className="bstep__hint">{t.ab_free_note}</span>
         </header>
-        <div className="sizestrip" role="radiogroup" aria-label={t.ab_step_size}>
-          {available(acaiSizes).map((s) => (
-            <button key={s.id} type="button" role="radio" aria-checked={s.id === sizeId} className={`sizechip sizechip--cup ${s.id === sizeId ? "is-on" : ""}`} onClick={() => setSizeId(s.id)}>
-              <span className="sizechip__cup" style={{ ["--h" as string]: `${16 + (s.ml - 300) * 0.06}px` }} />
-              <span className="sizechip__name">{s.name}</span>
-              <span className="sizechip__price">{fmt(s.price)}</span>
-            </button>
-          ))}
-        </div>
+        <SizePicker
+          label={t.ab_step_size}
+          value={sizeId}
+          onChange={setSizeId}
+          options={available(acaiSizes).map((s) => ({
+            id: s.id,
+            name: s.name,
+            meta: t.ab_free_note,
+            price: fmt(s.price),
+            icon: <span className="sizechip__cup" style={{ ["--h" as string]: `${16 + (s.ml - 300) * 0.06}px` }} />,
+          }))}
+        />
       </section>
 
       {/* 3 · Receita */}

@@ -9,6 +9,7 @@ import { Builder } from "./Builder";
 import { CheckIcon, CloseIcon, SearchIcon } from "./Icons";
 import { PizzaPreview } from "./PizzaPreview";
 import { Price } from "./Price";
+import { SizePicker } from "./SizePicker";
 
 type Props = {
   initial?: Partial<Pick<PizzaItem, "sizeId" | "flavorIds" | "crustId">>;
@@ -100,25 +101,18 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
           <span className="bstep__num">1</span>
           <h3 className="bstep__title">{t.pb_step_size}</h3>
         </header>
-        <div className="sizestrip" role="radiogroup" aria-label={t.pb_step_size}>
-          {sizes.map((s) => (
-            <button
-              key={s.id}
-              type="button"
-              role="radio"
-              aria-checked={s.id === sizeId}
-              className={`sizechip ${s.id === sizeId ? "is-on" : ""}`}
-              onClick={() => changeSize(s.id)}
-            >
-              <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />
-              <span className="sizechip__name">{s.name}</span>
-              <span className="sizechip__meta">
-                {s.cm} cm · {s.maxFlavors} {s.maxFlavors === 1 ? t.flavor_one : t.flavor_many}
-              </span>
-              <span className="sizechip__price">{fmt(s.price)}</span>
-            </button>
-          ))}
-        </div>
+        <SizePicker
+          label={t.pb_step_size}
+          value={sizeId}
+          onChange={changeSize}
+          options={sizes.map((s) => ({
+            id: s.id,
+            name: s.name,
+            meta: `${s.cm} cm · ${s.maxFlavors} ${s.maxFlavors === 1 ? t.flavor_one : t.flavor_many}`,
+            price: fmt(s.price),
+            icon: <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />,
+          }))}
+        />
       </section>
 
       {/* 2 · Sabores */}

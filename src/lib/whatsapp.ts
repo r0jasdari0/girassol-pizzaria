@@ -2,7 +2,7 @@ import { businessConfig } from "../config/business";
 import { acaiBases, acaiSizes, acaiToppings, byId, pizzaCrusts, pizzaFlavors, pizzaSizes, simpleProducts } from "../data/products";
 import { formatPrice } from "../store/prefs";
 import type { CartItem, Currency, Order, Price } from "../types";
-import { formatPhoneMsg, fractionAscii } from "./format";
+import { fractionAscii } from "./format";
 import { deliveryFeeFor, hasDeliveryFee, lineTotal, orderTotal, subtotal } from "./pricing";
 
 const RULE = "━━━━━━━━━━━━━━";
@@ -17,10 +17,8 @@ const paymentLabel = (order: Order): string => {
   switch (order.payment.method) {
     case "pix":
       return "PIX";
-    case "mercadopago":
-      return "Mercado Pago";
-    case "cartao":
-      return "Cartão na entrega";
+    case "transferencia":
+      return "Transferência";
     case "dinheiro": {
       const troco = order.payment.changeFor.trim();
       return troco ? `Dinheiro — troco para ${troco}` : "Dinheiro — sem troco";
@@ -86,7 +84,6 @@ export const buildOrderMessage = (order: Order): string => {
   out.push(`🌻 *NOVO PEDIDO — ${businessConfig.shortName.toUpperCase()}*`);
   out.push("");
   out.push(`👤 *Cliente:* ${order.customer.name.trim()}`);
-  out.push(`📞 *Telefone:* ${formatPhoneMsg(order.customer.phone)}`);
 
   for (const item of order.items) {
     out.push("");
@@ -100,12 +97,9 @@ export const buildOrderMessage = (order: Order): string => {
   out.push("");
 
   if (order.orderType === "entrega") {
-    const a = order.address;
     out.push("🚚 *ENTREGA*");
     out.push("");
-    out.push(`${a.street.trim()}, ${a.number.trim()}`);
-    out.push(`Bairro: ${a.neighborhood.trim()}`);
-    if (a.reference.trim()) out.push(`Referência: ${a.reference.trim()}`);
+    out.push("📍 Envio minha localização a seguir nesta conversa.");
   } else {
     out.push("🏪 *RETIRADA NO BALCÃO*");
     out.push("");

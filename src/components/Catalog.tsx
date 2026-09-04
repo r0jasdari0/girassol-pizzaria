@@ -95,18 +95,23 @@ export const Catalog = ({ onOpen }: Props) => {
           </div>
         </div>
 
-        <div className="sizestrip sizestrip--catalog" aria-label={t.pb_step_size}>
+        <ul className="sizelist" aria-label={t.pb_step_size}>
           {sizes.map((s) => (
-            <button key={s.id} type="button" className="sizechip" onClick={() => onOpen({ kind: "pizza", sizeId: s.id })}>
-              <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />
-              <span className="sizechip__name">{s.name}</span>
-              <span className="sizechip__meta">
-                {s.cm} cm · {s.maxFlavors} {s.maxFlavors === 1 ? t.flavor_one : t.flavor_many}
-              </span>
-              <span className="sizechip__price">{fmt(s.price)}</span>
-            </button>
+            <li key={s.id}>
+              <button type="button" className="sizerow" onClick={() => onOpen({ kind: "pizza", sizeId: s.id })}>
+                <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />
+                <span className="sizerow__text">
+                  <span className="sizerow__name">{s.name}</span>
+                  <span className="sizerow__meta">
+                    {s.cm} cm · {s.maxFlavors} {s.maxFlavors === 1 ? t.flavor_one : t.flavor_many}
+                  </span>
+                </span>
+                <span className="sizerow__price">{fmt(s.price)}</span>
+                <ChevronIcon size={18} className="sizerow__chev" />
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
 
         <div className="flavors">
           <header className="flavors__head">

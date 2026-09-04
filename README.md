@@ -75,8 +75,10 @@ Marcados com `TODO` nos arquivos de dados:
 3. Builder de açaí: base → tamanho → receita da casa (editável) → acompanhamentos,
    com contador de grátis restantes. O copo se enche conforme a escolha.
 4. Carrinho: editar, duplicar, remover, quantidade.
-5. Checkout: dados → entrega/retirada (endereço, número, bairro, referência) →
-   pagamento (Dinheiro, PIX, Mercado Pago, Cartão na entrega) + moeda → revisão.
+5. Checkout em 3 etapas: nome + entrega/retirada → pagamento + moeda → revisão.
+   Não pede telefone (o número aparece no WhatsApp) nem endereço: na entrega, o cliente
+   manda a localização na própria conversa depois de enviar o pedido.
+   Pagamento em reais: Dinheiro ou PIX. Em pesos: Efectivo ou Transferencia.
 6. **Enviar pedido pelo WhatsApp** abre `wa.me/<número>?text=<pedido>`; a tela seguinte
    oferece reabrir o WhatsApp e copiar o texto.
 

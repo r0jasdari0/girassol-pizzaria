@@ -120,16 +120,14 @@ export type NewCartItem = CartItem extends infer T ? (T extends CartItem ? Omit<
 
 // ── Checkout ─────────────────────────────────────────────────────
 export type OrderType = "entrega" | "retirada";
-export type PaymentMethod = "dinheiro" | "pix" | "mercadopago" | "cartao";
+export type PaymentMethod = "dinheiro" | "pix" | "transferencia";
 
-export type Customer = { name: string; phone: string };
-export type Address = { street: string; number: string; neighborhood: string; reference: string };
+export type Customer = { name: string };
 export type Payment = { method: PaymentMethod | null; changeFor: string };
 
 export type Order = {
   customer: Customer;
   orderType: OrderType;
-  address: Address;
   payment: Payment;
   currency: Currency;
   items: CartItem[];

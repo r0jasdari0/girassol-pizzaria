@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { businessConfig } from "../config/business";
 import { itemLines, itemTitle } from "../lib/describe";
-import { isValidPhone, maskPhone, onlyDigits } from "../lib/format";
 import { deliveryFeeFor, hasDeliveryFee, itemCount, lineTotal, orderTotal, subtotal } from "../lib/pricing";
 import { buildOrderMessage, buildWhatsappUrl, openWhatsapp } from "../lib/whatsapp";
 import { useCart } from "../store/cart";
 import { usePrefs } from "../store/prefs";
-import type { Address, Customer, Order, OrderType, Payment, PaymentMethod } from "../types";
+import type { Customer, Order, OrderType, Payment, PaymentMethod } from "../types";
 import { FlagAR, FlagBR } from "./Flags";
 import { BackIcon, BikeIcon, CheckIcon, CopyIcon, EditIcon, StoreIcon, WhatsappIcon } from "./Icons";
 import { Price } from "./Price";
 
-type Step = 0 | 1 | 2 | 3;
-const emptyAddress: Address = { street: "", number: "", neighborhood: "", reference: "" };
-const KEY_CUSTOMER = "girassol.customer.v2";
-const KEY_ADDRESS = "girassol.address.v2";
+type Step = 0 | 1 | 2;
+const KEY_CUSTOMER = "girassol.customer.v3";
 const KEY_TYPE = "girassol.ordertype.v2";
 
 const loadJson = <T,>(key: string, fallback: T): T => {
@@ -39,8 +36,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
   const { t, tf, fmt, currency, setCurrency } = usePrefs();
   const { items } = useCart();
   const [step, setStep] = useState<Step>(0);
-  const [customer, setCustomer] = useState<Customer>(() => loadJson(KEY_CUSTOMER, { name: "", phone: "" }));
-  const [address, setAddress] = useState<Address>(() => loadJson(KEY_ADDRESS, emptyAddress));
+  const [customer, setCustomer] = useState<Customer>(() => loadJson(KEY_CUSTOMER, { name: "" }));
   const [orderType, setOrderType] = useState<OrderType>(() => loadJson(KEY_TYPE, { v: "entrega" as OrderType }).v);
   const [payment, setPayment] = useState<Payment>({ method: null, changeFor: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -49,7 +45,6 @@ export const Checkout = ({ onClose, onDone }: Props) => {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => saveJson(KEY_CUSTOMER, customer), [customer]);
-  useEffect(() => saveJson(KEY_ADDRESS, address), [address]);
   useEffect(() => saveJson(KEY_TYPE, { v: orderType }), [orderType]);
 
   useEffect(() => {
@@ -63,11 +58,20 @@ export const Checkout = ({ onClose, onDone }: Props) => {
     bodyRef.current?.scrollTo({ top: 0 });
   }, [step]);
 
-  const STEPS = [t.co_step_data, t.co_step_delivery, t.co_step_payment, t.co_step_review];
+  // Trocar de moeda invalida a forma de pagamento (PIX só em reais, transferência só em pesos).
+  useEffect(() => {
+    setPayment((p) => {
+      if (p.method === "pix" && currency === "ARS") return { ...p, method: null };
+      if (p.method === "transferencia" && currency === "BRL") return { ...p, method: null };
+      return p;
+    });
+  }, [currency]);
+
+  const STEPS = [t.co_step_data, t.co_step_payment, t.co_step_review];
 
   const order: Order = useMemo(
-    () => ({ customer, orderType, address, payment, currency, items }),
-    [customer, orderType, address, payment, currency, items],
+    () => ({ customer, orderType, payment, currency, items }),
+    [customer, orderType, payment, currency, items],
   );
   const message = useMemo(() => buildOrderMessage(order), [order]);
   const total = orderTotal(items, orderType);
@@ -75,16 +79,8 @@ export const Checkout = ({ onClose, onDone }: Props) => {
 
   const validate = (s: Step): Record<string, string> => {
     const e: Record<string, string> = {};
-    if (s === 0) {
-      if (customer.name.trim().length < 2) e.name = t.co_err_name;
-      if (!isValidPhone(customer.phone)) e.phone = t.co_err_phone;
-    }
-    if (s === 1 && orderType === "entrega") {
-      if (!address.street.trim()) e.street = t.co_err_street;
-      if (!address.number.trim()) e.number = t.co_err_number;
-      if (!address.neighborhood.trim()) e.neighborhood = t.co_err_neighborhood;
-    }
-    if (s === 2 && !payment.method) e.payment = t.co_err_payment;
+    if (s === 0 && customer.name.trim().length < 2) e.name = t.co_err_name;
+    if (s === 1 && !payment.method) e.payment = t.co_err_payment;
     return e;
   };
 
@@ -95,7 +91,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
       bodyRef.current?.querySelector<HTMLElement>("[data-error]")?.scrollIntoView({ block: "center", behavior: "smooth" });
       return;
     }
-    setStep((s) => Math.min(3, s + 1) as Step);
+    setStep((s) => Math.min(2, s + 1) as Step);
   };
   const back = () => (step === 0 ? onClose() : setStep((s) => Math.max(0, s - 1) as Step));
   const goTo = (s: Step) => {
@@ -104,13 +100,12 @@ export const Checkout = ({ onClose, onDone }: Props) => {
   };
 
   const send = () => {
-    const all = { ...validate(0), ...validate(1), ...validate(2) };
+    const all = { ...validate(0), ...validate(1) };
     if (items.length === 0) all.items = t.co_err_empty;
     if (Object.keys(all).length) {
       setErrors(all);
-      if (all.name || all.phone) goTo(0);
-      else if (all.street || all.number || all.neighborhood) goTo(1);
-      else if (all.payment) goTo(2);
+      if (all.name) goTo(0);
+      else if (all.payment) goTo(1);
       return;
     }
     const url = buildWhatsappUrl(message);
@@ -128,6 +123,19 @@ export const Checkout = ({ onClose, onDone }: Props) => {
     }
   };
 
+  // Formas de pagamento dependem da moeda: reais → Dinheiro / PIX; pesos → Efectivo / Transferencia.
+  const payOptions: { id: PaymentMethod; label: string; desc: string }[] =
+    currency === "BRL"
+      ? [
+          { id: "dinheiro", label: t.pay_dinheiro, desc: t.pay_dinheiro_desc },
+          { id: "pix", label: t.pay_pix, desc: t.pay_pix_desc },
+        ]
+      : [
+          { id: "dinheiro", label: t.pay_dinheiro, desc: t.pay_dinheiro_desc },
+          { id: "transferencia", label: t.pay_transferencia, desc: t.pay_transferencia_desc },
+        ];
+  const payLabel = payOptions.find((p) => p.id === payment.method)?.label ?? "";
+
   if (sent) {
     return (
       <div className="checkout">
@@ -144,6 +152,11 @@ export const Checkout = ({ onClose, onDone }: Props) => {
             </span>
             <h3 className="done__title">{t.co_done_title}</h3>
             <p className="done__text">{t.co_done_text}</p>
+            {orderType === "entrega" && (
+              <p className="done__loc">
+                <BikeIcon size={18} /> {t.co_done_location}
+              </p>
+            )}
             <a className="btn btn--wa btn--block btn--lg" href={sent.url} target="_blank" rel="noopener noreferrer">
               <WhatsappIcon size={20} /> {t.co_done_open}
             </a>
@@ -159,14 +172,6 @@ export const Checkout = ({ onClose, onDone }: Props) => {
     );
   }
 
-  const payOptions: { id: PaymentMethod; label: string; desc: string }[] = [
-    { id: "dinheiro", label: t.pay_dinheiro, desc: t.pay_dinheiro_desc },
-    { id: "pix", label: t.pay_pix, desc: t.pay_pix_desc },
-    { id: "mercadopago", label: t.pay_mercadopago, desc: t.pay_mercadopago_desc },
-    { id: "cartao", label: t.pay_cartao, desc: t.pay_cartao_desc },
-  ];
-  const payLabel = payOptions.find((p) => p.id === payment.method)?.label ?? "";
-
   return (
     <div className="checkout">
       <header className="checkout__head">
@@ -179,7 +184,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
         </span>
       </header>
 
-      <ol className="steps">
+      <ol className="steps steps--3">
         {STEPS.map((label, i) => (
           <li key={label} className={`steps__item ${i === step ? "is-current" : ""} ${i < step ? "is-done" : ""}`}>
             <button type="button" className="steps__btn" onClick={() => i < step && goTo(i as Step)} disabled={i > step}>
@@ -195,40 +200,36 @@ export const Checkout = ({ onClose, onDone }: Props) => {
           <section className="stepview">
             <p className="stepview__lead">{t.co_lead_data}</p>
             <Field label={t.co_name} error={errors.name}>
-              <input className="input" type="text" autoComplete="name" placeholder={t.co_name_ph} value={customer.name} onChange={(e) => setCustomer({ ...customer, name: e.target.value })} autoFocus />
-            </Field>
-            <Field label={t.co_phone} error={errors.phone} hint={t.co_phone_hint}>
               <input
-                className="input"
-                type="tel"
-                inputMode="numeric"
-                autoComplete="tel-national"
-                placeholder={t.co_phone_ph}
-                value={maskPhone(customer.phone)}
-                onChange={(e) => setCustomer({ ...customer, phone: onlyDigits(e.target.value).slice(0, 12) })}
+                className="input input--lg"
+                type="text"
+                autoComplete="name"
+                placeholder={t.co_name_ph}
+                value={customer.name}
+                onChange={(e) => setCustomer({ name: e.target.value })}
+                autoFocus
               />
             </Field>
-          </section>
-        )}
 
-        {step === 1 && (
-          <section className="stepview">
-            <div className="choice">
-              <button type="button" className={`choice__opt ${orderType === "entrega" ? "is-on" : ""}`} aria-pressed={orderType === "entrega"} onClick={() => setOrderType("entrega")}>
-                <BikeIcon />
-                <span className="choice__name">{t.co_delivery}</span>
-                <span className="choice__meta">
-                  {businessConfig.deliveryEta}
-                  {hasDeliveryFee("entrega") ? ` · ${fmt(deliveryFeeFor("entrega"))}` : ""}
-                </span>
-              </button>
-              <button type="button" className={`choice__opt ${orderType === "retirada" ? "is-on" : ""}`} aria-pressed={orderType === "retirada"} onClick={() => setOrderType("retirada")}>
-                <StoreIcon />
-                <span className="choice__name">{t.co_pickup}</span>
-                <span className="choice__meta">
-                  {businessConfig.pickupEta} · {t.co_no_fee}
-                </span>
-              </button>
+            <div className="field">
+              <span className="field__label">{t.co_type_label}</span>
+              <div className="choice">
+                <button type="button" className={`choice__opt ${orderType === "entrega" ? "is-on" : ""}`} aria-pressed={orderType === "entrega"} onClick={() => setOrderType("entrega")}>
+                  <BikeIcon />
+                  <span className="choice__name">{t.co_delivery}</span>
+                  <span className="choice__meta">
+                    {businessConfig.deliveryEta}
+                    {hasDeliveryFee("entrega") ? ` · ${fmt(deliveryFeeFor("entrega"))}` : ""}
+                  </span>
+                </button>
+                <button type="button" className={`choice__opt ${orderType === "retirada" ? "is-on" : ""}`} aria-pressed={orderType === "retirada"} onClick={() => setOrderType("retirada")}>
+                  <StoreIcon />
+                  <span className="choice__name">{t.co_pickup}</span>
+                  <span className="choice__meta">
+                    {businessConfig.pickupEta} · {t.co_no_fee}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {orderType === "retirada" ? (
@@ -240,25 +241,17 @@ export const Checkout = ({ onClose, onDone }: Props) => {
                 </p>
               </div>
             ) : (
-              <div className="grid-2">
-                <Field label={t.co_address} error={errors.street} span={2}>
-                  <input className="input" type="text" autoComplete="street-address" placeholder={t.co_address_ph} value={address.street} onChange={(e) => setAddress({ ...address, street: e.target.value })} />
-                </Field>
-                <Field label={t.co_number} error={errors.number}>
-                  <input className="input" type="text" inputMode="numeric" placeholder="145" value={address.number} onChange={(e) => setAddress({ ...address, number: e.target.value })} />
-                </Field>
-                <Field label={t.co_neighborhood} error={errors.neighborhood}>
-                  <input className="input" type="text" autoComplete="address-level3" placeholder={t.co_neighborhood_ph} value={address.neighborhood} onChange={(e) => setAddress({ ...address, neighborhood: e.target.value })} />
-                </Field>
-                <Field label={t.co_reference} hint={t.optional} span={2}>
-                  <input className="input" type="text" placeholder={t.co_reference_ph} value={address.reference} onChange={(e) => setAddress({ ...address, reference: e.target.value })} />
-                </Field>
+              <div className="card card--wa">
+                <span className="eyebrow">
+                  <WhatsappIcon size={14} /> {t.co_location_title}
+                </span>
+                <p className="card__text card__text--dark">{t.co_location_note}</p>
               </div>
             )}
           </section>
         )}
 
-        {step === 2 && (
+        {step === 1 && (
           <section className="stepview">
             <p className="stepview__lead">{t.co_lead_payment}</p>
 
@@ -299,7 +292,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
           </section>
         )}
 
-        {step === 3 && (
+        {step === 2 && (
           <section className="stepview">
             {errors.items && <p className="field__error">{errors.items}</p>}
 
@@ -320,26 +313,26 @@ export const Checkout = ({ onClose, onDone }: Props) => {
               </ul>
             </ReviewCard>
 
-            {orderType === "entrega" ? (
-              <ReviewCard title={t.co_delivery} icon={<BikeIcon size={18} />} onEdit={() => goTo(1)} editLabel={t.co_edit_address}>
-                <p className="review__big">
-                  {address.street}, {address.number}
+            <ReviewCard
+              title={orderType === "entrega" ? t.co_delivery : t.co_pickup}
+              icon={orderType === "entrega" ? <BikeIcon size={18} /> : <StoreIcon size={18} />}
+              onEdit={() => goTo(0)}
+              editLabel={t.co_edit_type}
+            >
+              <p className="review__big">{customer.name.trim()}</p>
+              {orderType === "entrega" ? (
+                <p className="review__line review__line--muted">
+                  <WhatsappIcon size={13} /> {t.co_location_short}
                 </p>
-                <p className="review__line">{address.neighborhood}</p>
-                {address.reference && (
-                  <p className="review__line review__line--muted">
-                    {t.co_reference}: {address.reference}
-                  </p>
-                )}
-              </ReviewCard>
-            ) : (
-              <ReviewCard title={t.co_pickup} icon={<StoreIcon size={18} />} onEdit={() => goTo(1)} editLabel={t.co_switch_to_delivery}>
-                <p className="review__big">{businessConfig.address}</p>
-                <p className="review__line review__line--muted">{businessConfig.pickupEta}</p>
-              </ReviewCard>
-            )}
+              ) : (
+                <>
+                  <p className="review__line">{businessConfig.address}</p>
+                  <p className="review__line review__line--muted">{businessConfig.pickupEta}</p>
+                </>
+              )}
+            </ReviewCard>
 
-            <ReviewCard title={t.co_step_payment} onEdit={() => goTo(2)} editLabel={t.co_change}>
+            <ReviewCard title={t.co_step_payment} onEdit={() => goTo(1)} editLabel={t.co_change}>
               <p className="review__big">
                 {payLabel}
                 {payment.method === "dinheiro" && payment.changeFor.trim() && ` · ${t.co_change_for} ${payment.changeFor.trim()}`}
@@ -377,7 +370,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
       </div>
 
       <footer className="checkout__foot">
-        {step < 3 ? (
+        {step < 2 ? (
           <button type="button" className="btn btn--ink btn--block btn--lg" onClick={next}>
             {t.co_continue}
           </button>
@@ -396,8 +389,8 @@ export const Checkout = ({ onClose, onDone }: Props) => {
 
 // ── peças ──────────────────────────────────────────────────────────
 
-const Field = ({ label, hint, error, span, children }: { label: string; hint?: string; error?: string; span?: 2; children: ReactNode }) => (
-  <label className={`field ${span === 2 ? "field--span" : ""} ${error ? "has-error" : ""}`} {...(error ? { "data-error": true } : {})}>
+const Field = ({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: ReactNode }) => (
+  <label className={`field ${error ? "has-error" : ""}`} {...(error ? { "data-error": true } : {})}>
     <span className="field__label">
       {label}
       {hint && <span className="field__hint">{hint}</span>}
