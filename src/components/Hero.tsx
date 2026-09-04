@@ -5,10 +5,12 @@ import { WhatsappIcon } from "./Icons";
 import { StatusPill } from "./OpenStatus";
 import { Carousel } from "./Carousel";
 
-type Props = { onBuild: () => void };
+import type { OpenBuilder } from "./Catalog";
+
+type Props = { onBuild: () => void; onOpen: (b: OpenBuilder) => void };
 
 
-export const Hero = ({ onBuild }: Props) => {
+export const Hero = ({ onBuild, onOpen }: Props) => {
   const { t } = usePrefs();
   const reduce = useReducedMotion();
 
@@ -31,7 +33,7 @@ export const Hero = ({ onBuild }: Props) => {
                 : { opacity: { duration: 0.5 }, scale: { duration: 0.5 }, y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } }
             }
           />
-          <Carousel />
+          <Carousel onOpen={onOpen} />
           <div className="hero__status">
             <StatusPill />
           </div>

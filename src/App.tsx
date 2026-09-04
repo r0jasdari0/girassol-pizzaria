@@ -31,7 +31,7 @@ const Shell = () => {
     <div className="app">
       <Nav onCart={() => setCartOpen(true)} />
       <ClosedBanner />
-      <Hero onBuild={() => setBuilder({ mode: "new", kind: "pizza" })} />
+      <Hero onBuild={() => setBuilder({ mode: "new", kind: "pizza" })} onOpen={(b) => setBuilder({ mode: "new", ...b })} />
       <Catalog onOpen={(b) => setBuilder({ mode: "new", ...b })} />
       <CartBar onOpen={() => setCartOpen(true)} />
 

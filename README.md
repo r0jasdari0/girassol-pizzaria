@@ -85,24 +85,15 @@ copo (valores assumidos) e o endereço da loja. O cardápio também traz um What
 
 ## Carrossel de destaques (home, abaixo do logo)
 
-Os banners ficam em `public/banners/` e a lista com o destino de cada um em
-[src/data/banners.ts](src/data/banners.ts). Nomes esperados:
+Seis slides gerados por IA (Higgsfield, modelo nano_banana_pro), só com a foto de fundo em
+`public/banners/`: `pizza.jpg`, `combos.jpg`, `acai.jpg`, `picadas.jpg`, `carnes.jpg`, `bebidas.jpg`.
+Título, texto, preços e botão são desenhados pelo site por cima, no idioma e moeda ativos —
+tudo em [src/data/banners.ts](src/data/banners.ts). Os slides "pizza" e "açaí" abrem o builder
+direto; os outros rolam até a seção.
 
-| Arquivo        | Leva para   |
-| -------------- | ----------- |
-| `combo-1.jpg`  | Combos      |
-| `combo-2.jpg`  | Combos      |
-| `acai.jpg`     | Açaí        |
-| `picadas.jpg`  | Picadas     |
-| `bebidas.jpg`  | Bebidas     |
-
-Para usar as artes oficiais: salve os arquivos originais (PNG/JPG) em uma pasta `banners-src/`
-e rode `python scripts/prepare-banners.py banners-src/ public/banners/`. O script converte para
-JPG, limita a 1600 px de largura e mantém os nomes. Enquanto isso, o carrossel usa fotos
-provisórias com esses mesmos nomes.
-
-O carrossel avança sozinho a cada 4,5 s, pausa ao tocar, aceita arrasto, tem pontos de
-navegação e setas no desktop. Proporção 4:3 (artes verticais são recortadas ao centro).
+Para trocar uma arte: salve a nova foto em `banners-src/` com o mesmo nome e rode
+`python scripts/prepare-banners.py banners-src/ public/banners/` (JPG, 1600 px). Deixe a área
+esquerda da foto mais limpa: é onde o texto entra.
 
 ## Pizza com fotos reais no builder (por fatias)
 

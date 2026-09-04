@@ -2801,22 +2801,6 @@ small {
   object-fit: cover;
   display: block;
 }
-.carousel__cta {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 8px 12px 8px 14px;
-  border-radius: 999px;
-  background: rgba(22, 16, 6, 0.82);
-  color: var(--sun);
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 13px;
-  backdrop-filter: blur(6px);
-}
 .carousel__dots {
   position: absolute;
   left: 0;
@@ -2907,5 +2891,103 @@ small {
   }
   .carousel {
     max-width: none;
+  }
+}
+
+/* ═══ Slides com texto por cima da foto ═══ */
+.slide__copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 16px 16px 30px;
+  color: #fff;
+  background: linear-gradient(90deg, rgba(22, 16, 6, 0.82) 0%, rgba(22, 16, 6, 0.55) 40%, rgba(22, 16, 6, 0) 72%),
+    linear-gradient(0deg, rgba(22, 16, 6, 0.55) 0%, rgba(22, 16, 6, 0) 45%);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.carousel__slide--purple .slide__copy {
+  background: linear-gradient(90deg, rgba(53, 19, 63, 0.85) 0%, rgba(53, 19, 63, 0.55) 40%, rgba(53, 19, 63, 0) 72%),
+    linear-gradient(0deg, rgba(53, 19, 63, 0.55) 0%, rgba(53, 19, 63, 0) 45%);
+}
+.slide__eyebrow {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sun);
+}
+.slide__title {
+  font-family: var(--display);
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  max-width: 62%;
+}
+.slide__text {
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 60%;
+  line-height: 1.3;
+  opacity: 0.95;
+}
+.slide__prices {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.slide__price {
+  display: inline-flex;
+  flex-direction: column;
+  background: var(--sun);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1.1;
+  text-shadow: none;
+  font-variant-numeric: tabular-nums;
+}
+.slide__price small {
+  font-family: var(--display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.slide__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 8px;
+  padding: 9px 12px 9px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  text-shadow: none;
+}
+.carousel__slide--purple .slide__cta {
+  background: var(--sun);
+}
+@media (min-width: 600px) {
+  .slide__copy {
+    padding: 24px 24px 36px;
+  }
+  .slide__title {
+    font-size: 38px;
+  }
+  .slide__text {
+    font-size: 15px;
   }
 }

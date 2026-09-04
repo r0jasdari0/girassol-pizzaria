@@ -1,18 +1,20 @@
 import { useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { bannerSrc, banners } from "../data/banners";
+import { bannerSrc, banners, type Banner } from "../data/banners";
 import { usePrefs } from "../store/prefs";
+import type { OpenBuilder } from "./Catalog";
 import { ChevronIcon } from "./Icons";
 
-const INTERVAL = 4500;
+const INTERVAL = 5000;
+
+type Props = { onOpen?: (b: OpenBuilder) => void };
 
 /**
- * Carrossel de banners: arrasto com o dedo (scroll-snap nativo), avanço automático,
- * pausa ao tocar/passar o mouse, pontos de navegação e setas no desktop.
- * Cada slide é um link para a seção correspondente do cardápio.
+ * Carrossel de destaques: foto de fundo + texto/preços/botão desenhados pelo site.
+ * Arrasto com o dedo (scroll-snap), avanço automático, pausa ao tocar, pontos e setas.
  */
-export const Carousel = () => {
-  const { t } = usePrefs();
+export const Carousel = ({ onOpen }: Props) => {
+  const { t, lang, fmt } = usePrefs();
   const reduce = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -33,7 +35,6 @@ export const Carousel = () => {
     [n, reduce],
   );
 
-  // índice atual a partir da posição do scroll (funciona com arrasto manual)
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -52,19 +53,24 @@ export const Carousel = () => {
     };
   }, [n]);
 
-  // avanço automático
   useEffect(() => {
     if (paused || hidden || reduce || n < 2) return;
     const id = setInterval(() => goTo(index + 1), INTERVAL);
     return () => clearInterval(id);
   }, [index, paused, hidden, reduce, n, goTo]);
 
-  // pausa quando a aba fica em segundo plano
   useEffect(() => {
     const onVis = () => setHidden(document.hidden);
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
+
+  const activate = (b: Banner, e: React.MouseEvent) => {
+    if (b.action && onOpen) {
+      e.preventDefault();
+      onOpen({ kind: b.action });
+    }
+  };
 
   if (n === 0) return null;
 
@@ -84,15 +90,30 @@ export const Carousel = () => {
         {slides.map((b, i) => (
           <a
             key={b.id}
-            className="carousel__slide"
+            className={`carousel__slide carousel__slide--${b.theme}`}
             href={b.href}
-            aria-label={b.alt}
+            onClick={(e) => activate(b, e)}
             aria-hidden={i !== index}
             tabIndex={i === index ? 0 : -1}
           >
-            <img src={bannerSrc(b)} alt="" loading={i === 0 ? "eager" : "lazy"} decoding="async" width={1600} height={1200} />
-            <span className="carousel__cta">
-              {t.carousel_cta} <ChevronIcon size={16} />
+            <img src={bannerSrc(b)} alt="" loading={i === 0 ? "eager" : "lazy"} decoding="async" width={1600} height={1195} />
+            <span className="slide__copy">
+              <span className="slide__eyebrow">{b.eyebrow[lang]}</span>
+              <span className="slide__title">{b.title[lang]}</span>
+              {b.text && <span className="slide__text">{b.text[lang]}</span>}
+              {b.prices && (
+                <span className="slide__prices">
+                  {b.prices.map((p) => (
+                    <span key={p.label} className="slide__price">
+                      <small>{p.label}</small>
+                      {fmt(p.price)}
+                    </span>
+                  ))}
+                </span>
+              )}
+              <span className="slide__cta">
+                {b.cta[lang]} <ChevronIcon size={16} />
+              </span>
             </span>
           </a>
         ))}
