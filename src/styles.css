@@ -2877,3 +2877,35 @@ small {
 .picadas .sec__subtitle {
   scroll-margin-top: var(--nav-h);
 }
+
+/* ═══ Hero enxuto: logo, carrossel, status, texto ═══ */
+.hero__inner {
+  padding: 14px 20px 28px;
+  display: block;
+  max-width: 640px;
+}
+.hero__brand {
+  margin: 0 auto 12px;
+  width: min(340px, 78%);
+}
+.carousel {
+  margin-top: 4px;
+}
+.hero__status {
+  margin-top: 14px;
+}
+.hero__text {
+  margin-top: 12px;
+}
+@media (min-width: 900px) {
+  .hero__inner {
+    padding: 24px 24px 40px;
+    min-height: 0;
+  }
+  .hero__brand {
+    width: min(420px, 80%);
+  }
+  .carousel {
+    max-width: none;
+  }
+}
