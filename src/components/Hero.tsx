@@ -97,6 +97,24 @@ export const Hero = ({ onBuild }: Props) => {
           transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
         >
           <div className="hero__disc" aria-hidden />
+          <motion.img
+            className="hero__logo"
+            src={siteImages.logo}
+            alt="Girassol Pizzaria"
+            width={1200}
+            height={893}
+            initial={reduce ? false : { opacity: 0, y: -16, rotate: -10 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -8, 0], rotate: [-6, -3.5, -6] }}
+            transition={
+              reduce
+                ? { duration: 0.3 }
+                : {
+                    opacity: { duration: 0.6, delay: 0.3 },
+                    y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 },
+                    rotate: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 },
+                  }
+            }
+          />
           <img
             className="hero__photo"
             src={siteImages.heroPizza}
@@ -105,10 +123,10 @@ export const Hero = ({ onBuild }: Props) => {
             height={1200}
             fetchPriority="high"
           />
-          <Floating x="-4%" y="12%" delay={0} size={56}>
+          <Floating x="70%" y="-4%" delay={0} size={52}>
             <Tomato />
           </Floating>
-          <Floating x="84%" y="6%" delay={0.8} size={48}>
+          <Floating x="92%" y="24%" delay={0.8} size={46}>
             <Basil />
           </Floating>
           <Floating x="88%" y="70%" delay={0.4} size={50}>

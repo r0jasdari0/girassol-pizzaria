@@ -69,6 +69,8 @@ export const es: Dict = {
   notes_ph_pizza: "Ej.: sin cebolla, bien cocida…",
   notes_ph_acai: "Ej.: sin azúcar, granola aparte…",
   free: "Gratis",
+  on_request: "Consultar precio",
+  vip_note: "Los sabores VIP tienen precio a consultar: lo confirmamos por WhatsApp.",
 
   ab_title: "Armá tu açaí",
   ab_step_base: "Base",
@@ -76,6 +78,7 @@ export const es: Dict = {
   ab_step_recipe: "Receta",
   ab_step_toppings: "Acompañamientos",
   ab_free_note: "Hasta 3 acompañamientos gratis.",
+  ab_barca_note: "Barca: adicionales se cobran aparte.",
   ab_free_left: "Todavía podés elegir {n} acompañamiento(s) gratis.",
   ab_free_used: "Los 3 gratis ya están en el vaso. Los siguientes se cobran.",
   ab_extras: "{n} extra(s)",

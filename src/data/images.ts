@@ -6,4 +6,6 @@ export const siteImages = {
   pizzaSection: img("pizza-portuguesa"),
   acaiSection: img("acai-500"),
   cupuacu: img("cupuacu-500"),
+  /** Logotipo oficial com fundo transparente (public/images/logo-girassol.png). */
+  logo: `${import.meta.env.BASE_URL}images/logo-girassol.png`,
 } as const;

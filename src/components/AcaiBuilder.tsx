@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { acaiBases, acaiRecipes, acaiSizes, acaiToppings, available, byId, freeToppings } from "../data/products";
-import { acaiExtrasCount, acaiFreeLeft, acaiPrice, mul } from "../lib/pricing";
+import { acaiBases, acaiRecipes, acaiSizes, acaiToppings, available, byId } from "../data/products";
+import { acaiExtrasCount, acaiFreeLeft, acaiFreeQuota, acaiPrice, mul, toppingPriceFor } from "../lib/pricing";
 import { useCart } from "../store/cart";
 import { usePrefs } from "../store/prefs";
 import type { AcaiItem } from "../types";
@@ -32,8 +32,10 @@ export const AcaiBuilder = ({ initial, editing, onClose }: Props) => {
   const [qty, setQty] = useState(editing?.qty ?? 1);
 
   const unit = useMemo(() => acaiPrice(sizeId, toppingIds), [sizeId, toppingIds]);
-  const freeLeft = acaiFreeLeft(toppingIds);
-  const extras = acaiExtrasCount(toppingIds);
+  const quota = acaiFreeQuota(sizeId);
+  const freeLeft = acaiFreeLeft(sizeId, toppingIds);
+  const extras = acaiExtrasCount(sizeId, toppingIds);
+  const isBarca = byId(acaiSizes, sizeId).kind === "barca";
   const recipe = recipeId ? byId(acaiRecipes, recipeId) : null;
   const recipeEdited = recipe ? !sameSet(recipe.toppingIds, toppingIds) : false;
 
@@ -97,7 +99,7 @@ export const AcaiBuilder = ({ initial, editing, onClose }: Props) => {
           options={available(acaiSizes).map((s) => ({
             id: s.id,
             name: s.name,
-            meta: t.ab_free_note,
+            meta: s.kind === "copo" ? t.ab_free_note : t.ab_barca_note,
             price: fmt(s.price),
             icon: <span className="sizechip__cup" style={{ ["--h" as string]: `${16 + (s.ml - 300) * 0.06}px` }} />,
           }))}
@@ -134,20 +136,20 @@ export const AcaiBuilder = ({ initial, editing, onClose }: Props) => {
           <h3 className="bstep__title">{t.ab_step_toppings}</h3>
         </header>
         <p className={`bstep__status ${freeLeft === 0 ? "bstep__status--warn" : ""}`} aria-live="polite">
-          {freeLeft > 0 ? tf("ab_free_left", { n: freeLeft }) : t.ab_free_used}
+          {isBarca ? t.ab_barca_note : freeLeft > 0 ? tf("ab_free_left", { n: freeLeft }) : t.ab_free_used}
           {extras > 0 && ` · ${tf("ab_extras", { n: extras })}`}
         </p>
         <div className="pills">
           {available(acaiToppings).map((tp) => {
             const idx = toppingIds.indexOf(tp.id);
             const on = idx >= 0;
-            const free = on ? idx < freeToppings : freeLeft > 0;
+            const free = on ? idx < quota : freeLeft > 0;
             return (
               <button key={tp.id} type="button" className={`pill ${on ? "is-on" : ""}`} aria-pressed={on} onClick={() => toggle(tp.id)}>
                 <span className="pill__swatch" style={{ background: tp.color }} />
                 {on && <CheckIcon size={14} />}
                 {tp.name}
-                <small className={free ? "pill__free" : "pill__paid"}>{free ? t.free : `+${fmt(tp.price)}`}</small>
+                <small className={free ? "pill__free" : "pill__paid"}>{free ? t.free : `+${fmt(toppingPriceFor(sizeId, tp.id))}`}</small>
               </button>
             );
           })}

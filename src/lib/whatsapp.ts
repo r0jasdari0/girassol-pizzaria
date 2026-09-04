@@ -46,6 +46,10 @@ export const describeItem = (item: CartItem, currency: Currency): string[] => {
       lines.push("Borda:");
       lines.push(`• ${crust.name}`);
     }
+    if (item.flavorIds.some((id) => byId(pizzaFlavors, id).priceOnRequest)) {
+      lines.push("");
+      lines.push("⚠️ Sabor VIP: valor a confirmar pela Girassol.");
+    }
     if (item.notes.trim()) {
       lines.push("");
       lines.push(`Obs: ${item.notes.trim()}`);

@@ -133,7 +133,7 @@ export const Catalog = ({ onOpen }: Props) => {
                           <span className="fl__name">{f.name}</span>
                           {f.description && <span className="fl__desc">{f.description}</span>}
                         </span>
-                        {!isFree(f.extra) && <span className="fl__extra">+{fmt(f.extra)}</span>}
+                        {f.priceOnRequest ? <span className="fl__extra fl__extra--ask">{t.on_request}</span> : !isFree(f.extra) && <span className="fl__extra">+{fmt(f.extra)}</span>}
                       </button>
                     </li>
                   ))}
@@ -161,9 +161,9 @@ export const Catalog = ({ onOpen }: Props) => {
         </div>
         <div className="sec__sizes">
           {available(acaiSizes).map((s) => (
-            <button key={s.id} type="button" className="cupchip" onClick={() => onOpen({ kind: "acai", sizeId: s.id })}>
-              <span className="cupchip__cup" style={{ ["--h" as string]: `${28 + (s.ml - 300) * 0.1}px` }} />
-              <span className="cupchip__name">{s.name}</span>
+            <button key={s.id} type="button" className={`cupchip ${s.kind === "barca" ? "cupchip--barca" : ""}`} onClick={() => onOpen({ kind: "acai", sizeId: s.id })}>
+              <span className={s.kind === "barca" ? "cupchip__boat" : "cupchip__cup"} style={{ ["--h" as string]: `${28 + (s.ml - 300) * 0.06}px` }} />
+              <span className="cupchip__name">{s.name.replace("Copo ", "")}</span>
               <span className="cupchip__price">{fmt(s.price)}</span>
             </button>
           ))}

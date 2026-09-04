@@ -49,15 +49,16 @@ system vivem em [src/styles.css](src/styles.css) (`:root`).
 Todo produto tem `available` (para tirar do ar sem apagar) e preço nas duas moedas
 (`price: { brl, ars }`). A interface mostra **uma moeda por vez**; o cliente troca no topo.
 
-### Valores provisórios que precisam de confirmação
+### Dados conferidos com o cardápio impresso (2026-09-04)
 
-Marcados com `TODO` nos arquivos de dados:
+Pizzas, bordas, os 45 sabores com descrições, açaí em copo (extras com preço real) e barcas
+P/M/G (adicionais com preço próprio), porções, carnes e combos.
+Os sabores **VIP** e **Doces VIP** aparecem como "Consultar valor", igual ao cardápio: entram no
+pedido sem acréscimo e a mensagem avisa a Girassol para confirmar.
 
-- Acréscimo dos sabores **VIP** (R$ 10 / $ 3.000) e **Doces VIP** (R$ 5 / $ 1.500).
-- Preço dos **extras do açaí** além dos 3 grátis (comum R$ 3 / $ 1.000, premium R$ 5 / $ 1.500).
-- **Bebidas** (lista e preços não constavam no cardápio recebido).
-- Descrições dos sabores VIP e doces (vieram só com o nome).
-- Endereço da loja.
+Ainda provisórios: **bebidas** (não constam no cardápio), Fini e pasta de amendoim no copo
+(valores assumidos) e o endereço da loja. O cardápio também traz um WhatsApp brasileiro
+(49 9 9978-6851); o site envia tudo para o argentino configurado.
 
 ## Regras de preço
 
@@ -81,6 +82,21 @@ Marcados com `TODO` nos arquivos de dados:
    Pagamento em reais: Dinheiro ou PIX. Em pesos: Efectivo ou Transferencia.
 6. **Enviar pedido pelo WhatsApp** abre `wa.me/<número>?text=<pedido>`; a tela seguinte
    oferece reabrir o WhatsApp e copiar o texto.
+
+## Pizza com fotos reais no builder (por fatias)
+
+O desenho da pizza aceita uma foto por sabor (`photo` em `pizzas.ts`, via `withPhoto`). Cada
+sabor escolhido aparece recortado na própria fatia, com as divisões reais; sabores sem foto
+usam a ilustração. Para o efeito ficar perfeito, todas as fotos precisam ser **iguais no
+enquadramento**: pizza inteira, vista de cima, centrada, mesma bandeja e luz.
+
+1. Fotografe cada sabor (celular fixo sobre a mesa) e salve como `entrada/<id-do-sabor>.jpg`.
+2. Rode `python scripts/normalize-pizza-photos.py entrada/ public/images/pizzas/` — o script
+   encontra a pizza, recorta um quadrado centrado e gera 1000×1000.
+3. Em `pizzas.ts`, envolva o sabor com `withPhoto(..., "pizzas/<id>")`.
+
+Hoje só Portuguesa, Frango com Catupiry e M&M têm foto (e são fotos em ângulo, só para
+demonstrar o efeito).
 
 ## Fotografia de produto
 

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { useId } from "react";
 import { byId, pizzaCrusts, pizzaFlavors, pizzaSizes } from "../data/products";
 import { fraction } from "../lib/format";
 import { CloseIcon } from "./Icons";
@@ -59,6 +60,7 @@ const splitName = (name: string): string[] => {
 export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slots = false, title, onRemove }: Props) => {
   const { t } = usePrefs();
   const reduce = useReducedMotion();
+  const uid = useId().replace(/:/g, "");
   const size = byId(pizzaSizes, sizeId);
   const crust = byId(pizzaCrusts, crustId);
   const n = flavorIds.length;
@@ -132,6 +134,7 @@ export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slo
             }
             const f = byId(pizzaFlavors, id);
             const lines = slotCount === 1 ? [f.name] : splitName(f.name);
+            const clipId = `clip-${uid}-${i}`;
             return (
               <motion.g
                 key={id}
@@ -140,10 +143,33 @@ export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slo
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
               >
-                {slotCount === 1 ? <circle cx={C} cy={C} r={R_TOP} fill={f.color} /> : <path d={wedgePath(a0, a1, R_TOP)} fill={f.color} />}
-                {bits(a0, span, slotCount === 1 ? 14 : Math.max(4, Math.round(10 / slotCount) + 3), i).map(([x, y, r], k) => (
-                  <circle key={k} cx={x.toFixed(1)} cy={y.toFixed(1)} r={r} fill={f.bits} opacity="0.92" />
-                ))}
+                {f.photo ? (
+                  /* Foto real do sabor recortada na fatia. Fotos alinhadas (pizza inteira, de cima, centrada) encaixam entre si. */
+                  <>
+                    <clipPath id={clipId}>{slotCount === 1 ? <circle cx={C} cy={C} r={R_TOP} /> : <path d={wedgePath(a0, a1, R_TOP)} />}</clipPath>
+                    <image
+                      href={f.photo}
+                      x={C - R_TOP}
+                      y={C - R_TOP}
+                      width={R_TOP * 2}
+                      height={R_TOP * 2}
+                      preserveAspectRatio="xMidYMid slice"
+                      clipPath={`url(#${clipId})`}
+                    />
+                    {slotCount === 1 ? (
+                      <circle cx={C} cy={C} r={R_TOP - 1} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="3" />
+                    ) : (
+                      <path d={wedgePath(a0, a1, R_TOP)} fill="none" stroke="rgba(0,0,0,0.28)" strokeWidth="2" />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {slotCount === 1 ? <circle cx={C} cy={C} r={R_TOP} fill={f.color} /> : <path d={wedgePath(a0, a1, R_TOP)} fill={f.color} />}
+                    {bits(a0, span, slotCount === 1 ? 14 : Math.max(4, Math.round(10 / slotCount) + 3), i).map(([x, y, r], k) => (
+                      <circle key={k} cx={x.toFixed(1)} cy={y.toFixed(1)} r={r} fill={f.bits} opacity="0.92" />
+                    ))}
+                  </>
+                )}
                 <text x={lx} y={ly - (lines.length - 1) * 5} textAnchor="middle" className="pizza__label">
                   {lines.map((ln, k) => (
                     <tspan key={k} x={lx} dy={k === 0 ? 0 : 11}>

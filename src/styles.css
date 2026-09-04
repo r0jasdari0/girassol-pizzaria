@@ -2648,3 +2648,56 @@ small {
   width: auto;
   display: block;
 }
+
+/* ═══ Logotipo flutuando sobre a pizza do hero ═══ */
+.hero__logo {
+  position: absolute;
+  left: 1%;
+  top: -7%;
+  width: 62%;
+  height: auto;
+  z-index: 4;
+  filter: drop-shadow(0 14px 22px rgba(22, 16, 6, 0.38)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  pointer-events: none;
+  transform-origin: 40% 60%;
+}
+@media (min-width: 900px) {
+  .hero__logo {
+    left: -10%;
+    top: -12%;
+    width: 62%;
+  }
+}
+
+/* VIP: valor sob consulta */
+.fl__extra--ask,
+.flavor__extra--ask {
+  color: var(--red);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* açaí: copos e barcas no destaque */
+.cupchip__boat {
+  width: 44px;
+  height: 22px;
+  border-radius: 4px 4px 22px 22px;
+  background: linear-gradient(180deg, #fff 0 22%, var(--magenta) 22%);
+  margin-bottom: 8px;
+}
+.cupchip--barca {
+  border-style: dashed;
+}
+.cupchip__name {
+  white-space: nowrap;
+  font-size: 13px;
+}
+.sec--acai .sec__sizes {
+  gap: 8px;
+}
+.sec--acai .cupchip {
+  min-width: 0;
+  flex: 1 1 96px;
+  padding: 12px 8px 10px;
+}

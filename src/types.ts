@@ -48,6 +48,10 @@ export type PizzaFlavor = {
   bits: string;
   available: boolean;
   image?: string;
+  /** Foto da pizza inteira vista de cima, centrada. Usada no builder por fatias. */
+  photo?: string;
+  /** Linhas VIP: valor sob consulta (não entra no total). */
+  priceOnRequest?: boolean;
 };
 
 export type PizzaCrust = {
@@ -62,13 +66,23 @@ export type PizzaCrust = {
 // ── Açaí / Cupuaçu ───────────────────────────────────────────────
 export type AcaiBase = { id: string; name: string; color: string; available: boolean };
 
-export type AcaiSize = { id: string; name: string; ml: number; price: Price; available: boolean };
+export type AcaiSize = {
+  id: string;
+  name: string;
+  /** Copo (ml) ou barca (g). */
+  kind: "copo" | "barca";
+  ml: number;
+  price: Price;
+  available: boolean;
+};
 
 export type AcaiTopping = {
   id: string;
   name: string;
-  /** Preço quando vai além da cota grátis. */
+  /** Preço no copo, quando vai além da cota grátis. */
   price: Price;
+  /** Preço como adicional na barca (sempre cobrado). */
+  priceBarca: Price;
   /** Cor no desenho do copo. */
   color: string;
   /** Forma no desenho. */

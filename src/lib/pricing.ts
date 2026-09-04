@@ -31,12 +31,21 @@ export const pizzaPrice = (sizeId: string, flavorIds: string[], crustId: string)
  */
 export const acaiPrice = (sizeId: string, toppingIds: string[]): Price => {
   const size = byId(acaiSizes, sizeId);
+  if (size.kind === "barca") {
+    return add(size.price, sum(toppingIds.map((id) => byId(acaiToppings, id).priceBarca)));
+  }
   const paid = toppingIds.slice(freeToppings).map((id) => byId(acaiToppings, id).price);
   return add(size.price, sum(paid));
 };
 
-export const acaiFreeLeft = (toppingIds: string[]): number => Math.max(0, freeToppings - toppingIds.length);
-export const acaiExtrasCount = (toppingIds: string[]): number => Math.max(0, toppingIds.length - freeToppings);
+export const acaiFreeQuota = (sizeId: string): number => (byId(acaiSizes, sizeId).kind === "copo" ? freeToppings : 0);
+export const acaiFreeLeft = (sizeId: string, toppingIds: string[]): number => Math.max(0, acaiFreeQuota(sizeId) - toppingIds.length);
+export const acaiExtrasCount = (sizeId: string, toppingIds: string[]): number => Math.max(0, toppingIds.length - acaiFreeQuota(sizeId));
+/** Preço do acompanhamento para o tamanho escolhido. */
+export const toppingPriceFor = (sizeId: string, toppingId: string): Price => {
+  const tp = byId(acaiToppings, toppingId);
+  return byId(acaiSizes, sizeId).kind === "barca" ? tp.priceBarca : tp.price;
+};
 
 export const unitPrice = (item: CartItem): Price => {
   switch (item.kind) {

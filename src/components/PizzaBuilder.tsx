@@ -161,7 +161,7 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
                           {f.description && <span className="flavor__desc">{f.description}</span>}
                         </span>
                         <span className="flavor__side">
-                          {!isFree(f.extra) && <span className="flavor__extra">+{fmt(f.extra)}</span>}
+                          {f.priceOnRequest ? <span className="flavor__extra flavor__extra--ask">{t.on_request}</span> : !isFree(f.extra) && <span className="flavor__extra">+{fmt(f.extra)}</span>}
                           <span className="flavor__check">{on ? <CheckIcon size={14} /> : null}</span>
                         </span>
                       </button>
@@ -173,6 +173,7 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
           );
         })}
         <p className="field__note">{t.pb_extra_rule}</p>
+        {flavorIds.some((id) => byId(pizzaFlavors, id).priceOnRequest) && <p className="field__note field__note--warn">{t.vip_note}</p>}
       </section>
 
       {/* 2 · Borda */}

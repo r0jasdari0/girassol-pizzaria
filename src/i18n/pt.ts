@@ -71,6 +71,8 @@ export const pt = {
   notes_ph_pizza: "Ex.: sem cebola, bem assada…",
   notes_ph_acai: "Ex.: sem açúcar, granola separada…",
   free: "Grátis",
+  on_request: "Consultar valor",
+  vip_note: "Sabores VIP têm valor sob consulta: confirmamos pelo WhatsApp.",
 
   // açaí builder
   ab_title: "Monte seu açaí",
@@ -79,6 +81,7 @@ export const pt = {
   ab_step_recipe: "Receita",
   ab_step_toppings: "Acompanhamentos",
   ab_free_note: "Até 3 acompanhamentos grátis.",
+  ab_barca_note: "Barca: adicionais cobrados à parte.",
   ab_free_left: "Você ainda pode escolher {n} acompanhamento(s) grátis.",
   ab_free_used: "Os 3 grátis já estão no copo. Os próximos são cobrados.",
   ab_extras: "{n} extra(s)",
