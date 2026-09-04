@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { byId, pizzaCrusts, pizzaFlavors, pizzaSizes } from "../data/products";
 import { fraction } from "../lib/format";
+import { CloseIcon } from "./Icons";
 import { usePrefs } from "../store/prefs";
 
 type Props = {
@@ -13,6 +14,10 @@ type Props = {
   hero?: boolean;
   /** Rótulos "Sabor 1/2/3" nas fatias vazias. */
   slots?: boolean;
+  /** Título mostrado acima da legenda (ex.: "Escolha até 3 sabores"). */
+  title?: string;
+  /** Quando presente, cada sabor da legenda ganha um × para remover. */
+  onRemove?: (id: string) => void;
 };
 
 const C = 110;
@@ -51,7 +56,7 @@ const splitName = (name: string): string[] => {
  * Pizza que se monta conforme o cliente escolhe: o tamanho muda o diâmetro,
  * cada sabor vira uma fatia, a borda muda a cor do contorno.
  */
-export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slots = false }: Props) => {
+export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slots = false, title, onRemove }: Props) => {
   const { t } = usePrefs();
   const reduce = useReducedMotion();
   const size = byId(pizzaSizes, sizeId);
@@ -160,11 +165,20 @@ export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slo
 
       {!hero && (
         <div className="pizza__caption">
-          <strong>
-            {size.name} · {size.cm} cm
-          </strong>
+          {title ? (
+            <>
+              <strong className="pizza__title">{title}</strong>
+              <span className="pizza__size">
+                {size.name} · {size.cm} cm
+              </span>
+            </>
+          ) : (
+            <strong>
+              {size.name} · {size.cm} cm
+            </strong>
+          )}
           {n > 0 && (
-            <ul className="pizza__legend">
+            <ul className={`pizza__legend ${onRemove ? "pizza__legend--edit" : ""}`}>
               {flavorIds.map((id) => {
                 const f = byId(pizzaFlavors, id);
                 return (
@@ -172,6 +186,11 @@ export const PizzaPreview = ({ sizeId, flavorIds, crustId, px, hero = false, slo
                     <span className="pizza__swatch" style={{ background: f.bits }} />
                     {fraction(slotCount)}
                     {f.name}
+                    {onRemove && (
+                      <button type="button" className="pizza__remove" aria-label={`${t.cart_remove} ${f.name}`} onClick={() => onRemove(id)}>
+                        <CloseIcon size={14} />
+                      </button>
+                    )}
                   </li>
                 );
               })}

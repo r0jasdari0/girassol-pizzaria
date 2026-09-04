@@ -2569,3 +2569,75 @@ small {
     font-size: 11px;
   }
 }
+
+/* ═══ Palco da pizza como painel de seleção: título + × por sabor ═══ */
+.pizza__title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+.pizza__size {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-2);
+  opacity: 0.8;
+}
+.pizza__legend--edit {
+  gap: 6px 8px;
+  margin-top: 2px;
+}
+.pizza__legend--edit li {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  padding: 4px 6px 4px 10px;
+  font-size: 13px;
+}
+.pizza__remove {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--sun);
+  margin-left: 2px;
+}
+.bstep--flavors {
+  margin-top: 18px;
+}
+.bstep--flavors .search {
+  margin-top: 0;
+}
+
+@media (max-width: 599px) {
+  /* letra maior nos sabores */
+  .flavor {
+    padding: 13px 4px;
+    gap: 12px;
+  }
+  .flavor__num {
+    font-size: 15px;
+  }
+  .flavor__name {
+    font-size: 17px;
+  }
+  .flavor__desc {
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .optgroup__title {
+    font-size: 13px;
+  }
+  /* palco: mais alto que antes para caber o título e a legenda editável */
+  .builder--sun .builder__stage .pizza__svg {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  .builder--sun .builder__stage .pizza__title {
+    font-size: 15px;
+  }
+  .builder--sun .builder__stage .pizza__legend--edit li {
+    font-size: 13px;
+  }
+}

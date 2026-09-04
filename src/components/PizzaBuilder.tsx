@@ -6,7 +6,7 @@ import { useCart } from "../store/cart";
 import { usePrefs } from "../store/prefs";
 import type { PizzaFlavorGroup, PizzaItem } from "../types";
 import { Builder } from "./Builder";
-import { CheckIcon, CloseIcon, SearchIcon } from "./Icons";
+import { CheckIcon, SearchIcon } from "./Icons";
 import { PizzaPreview } from "./PizzaPreview";
 import { Price } from "./Price";
 import { SizePicker } from "./SizePicker";
@@ -76,15 +76,19 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
     onClose();
   };
 
-  const flavorHint =
-    size.maxFlavors === 1 ? t.pb_choose_one : tf("pb_choose_up_to", { n: size.maxFlavors });
+  const stageTitle =
+    flavorIds.length >= size.maxFlavors
+      ? tf("pb_selected", { a: flavorIds.length, b: size.maxFlavors })
+      : size.maxFlavors === 1
+        ? t.pb_choose_one
+        : `${tf("pb_choose_up_to", { n: size.maxFlavors })} · ${flavorIds.length}/${size.maxFlavors}`;
 
   return (
     <Builder
       title={t.pb_title}
       accent="sun"
       onClose={onClose}
-      stage={<PizzaPreview sizeId={sizeId} flavorIds={flavorIds} crustId={crustId} slots px={240} />}
+      stage={<PizzaPreview sizeId={sizeId} flavorIds={flavorIds} crustId={crustId} slots px={240} title={stageTitle} onRemove={toggleFlavor} />}
       qty={qty}
       onQty={setQty}
       onSubmit={submit}
@@ -115,40 +119,8 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
         />
       </section>
 
-      {/* 2 · Sabores */}
-      <section className="bstep" id="pb-flavors">
-        <header className="bstep__head">
-          <span className="bstep__num">2</span>
-          <h3 className="bstep__title">{t.pb_step_flavors}</h3>
-          <span className="bstep__hint">{flavorHint}</span>
-        </header>
-
-        <div className="slots" aria-live="polite">
-          {Array.from({ length: size.maxFlavors }, (_, i) => {
-            const id = flavorIds[i];
-            const f = id ? byId(pizzaFlavors, id) : null;
-            return (
-              <div key={i} className={`slot ${f ? "is-filled" : ""}`}>
-                <span className="slot__label">
-                  {t.pb_flavor_n} {i + 1}
-                </span>
-                {f ? (
-                  <button type="button" className="slot__val" onClick={() => toggleFlavor(f.id)} aria-label={`${t.cart_remove} ${f.name}`}>
-                    <span className="slot__swatch" style={{ background: f.bits }} />
-                    {f.name}
-                    <CloseIcon size={14} />
-                  </button>
-                ) : (
-                  <span className="slot__empty">—</span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <p className="bstep__status">
-          {tf("pb_selected", { a: flavorIds.length, b: size.maxFlavors })}
-          {atMax && size.maxFlavors > 1 && <span className="bstep__status-max"> · {t.pb_max_reached}</span>}
-        </p>
+      {/* Sabores: a escolha aparece no desenho da pizza, acima */}
+      <section className="bstep bstep--flavors" id="pb-flavors" aria-label={t.pb_step_flavors}>
         {touched && flavorIds.length === 0 && <p className="field__error">{t.pb_need_flavor}</p>}
 
         <label className="search">
@@ -203,10 +175,10 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
         <p className="field__note">{t.pb_extra_rule}</p>
       </section>
 
-      {/* 3 · Borda */}
+      {/* 2 · Borda */}
       <section className="bstep">
         <header className="bstep__head">
-          <span className="bstep__num">3</span>
+          <span className="bstep__num">2</span>
           <h3 className="bstep__title">{t.pb_step_crust}</h3>
         </header>
         <div className="chips" role="radiogroup" aria-label={t.pb_step_crust}>
