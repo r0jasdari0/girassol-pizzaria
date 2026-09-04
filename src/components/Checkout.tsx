@@ -9,6 +9,8 @@ import type { Customer, Order, OrderType, Payment, PaymentMethod } from "../type
 import { FlagAR, FlagBR } from "./Flags";
 import { BackIcon, BikeIcon, CheckIcon, CopyIcon, EditIcon, StoreIcon, WhatsappIcon } from "./Icons";
 import { Price } from "./Price";
+import { useOpenStatus } from "../lib/hours";
+import { whenOpens } from "./OpenStatus";
 
 type Step = 0 | 1 | 2;
 const KEY_CUSTOMER = "girassol.customer.v3";
@@ -33,8 +35,9 @@ const saveJson = (key: string, v: unknown) => {
 type Props = { onClose: () => void; onDone: () => void };
 
 export const Checkout = ({ onClose, onDone }: Props) => {
-  const { t, tf, fmt, currency, setCurrency } = usePrefs();
+  const { t, tf, fmt, currency, setCurrency, lang } = usePrefs();
   const { items } = useCart();
+  const status = useOpenStatus();
   const [step, setStep] = useState<Step>(0);
   const [customer, setCustomer] = useState<Customer>(() => loadJson(KEY_CUSTOMER, { name: "" }));
   const [orderType, setOrderType] = useState<OrderType>(() => loadJson(KEY_TYPE, { v: "entrega" as OrderType }).v);
@@ -100,6 +103,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
   };
 
   const send = () => {
+    if (!status.open) return;
     const all = { ...validate(0), ...validate(1) };
     if (items.length === 0) all.items = t.co_err_empty;
     if (Object.keys(all).length) {
@@ -361,6 +365,12 @@ export const Checkout = ({ onClose, onDone }: Props) => {
               </div>
             </div>
 
+            {!status.open && (
+              <p className="closednote" role="alert">
+                ⏰ {tf("closed_send", { when: whenOpens(status, tf, lang) })}
+              </p>
+            )}
+
             <details className="comanda-wrap">
               <summary>{t.co_preview}</summary>
               <ComandaPreview text={message} />
@@ -375,7 +385,7 @@ export const Checkout = ({ onClose, onDone }: Props) => {
             {t.co_continue}
           </button>
         ) : (
-          <button type="button" className="btn btn--wa btn--block btn--lg" onClick={send} disabled={items.length === 0}>
+          <button type="button" className="btn btn--wa btn--block btn--lg" onClick={send} disabled={items.length === 0 || !status.open}>
             <WhatsappIcon size={22} /> {t.co_send}
           </button>
         )}

@@ -6,6 +6,7 @@ import { Catalog, type OpenBuilder } from "./components/Catalog";
 import { Checkout } from "./components/Checkout";
 import { Hero } from "./components/Hero";
 import { Nav } from "./components/Nav";
+import { ClosedBanner } from "./components/OpenStatus";
 import { PizzaBuilder } from "./components/PizzaBuilder";
 import { CartProvider, useCart } from "./store/cart";
 import { PrefsProvider } from "./store/prefs";
@@ -29,6 +30,7 @@ const Shell = () => {
   return (
     <div className="app">
       <Nav onCart={() => setCartOpen(true)} />
+      <ClosedBanner />
       <Hero onBuild={() => setBuilder({ mode: "new", kind: "pizza" })} />
       <Catalog onOpen={(b) => setBuilder({ mode: "new", ...b })} />
       <CartBar onOpen={() => setCartOpen(true)} />

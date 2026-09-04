@@ -2701,3 +2701,66 @@ small {
   flex: 1 1 96px;
   padding: 12px 8px 10px;
 }
+
+/* ═══ Horário de funcionamento ═══ */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 7px 12px 7px 10px;
+  border-radius: 999px;
+  background: rgba(22, 16, 6, 0.08);
+  color: var(--ink);
+}
+.status__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--wa);
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.25);
+}
+.status--closed .status__dot {
+  background: var(--red);
+  box-shadow: 0 0 0 3px rgba(200, 65, 43, 0.22);
+}
+.hero__status {
+  margin-top: 12px;
+}
+.closedbar {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+.closedbar strong {
+  color: var(--sun);
+  font-weight: 800;
+}
+.closedbar__hours {
+  font-size: 12px;
+  opacity: 0.8;
+}
+.closednote {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--r);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 14px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}

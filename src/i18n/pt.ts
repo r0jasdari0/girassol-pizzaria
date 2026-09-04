@@ -16,6 +16,16 @@ export const pt = {
   hero_cta: "Montar meu pedido",
   hero_cta_2: "Ver cardápio",
   hero_note: "Pedido pronto direto no WhatsApp da Girassol.",
+  status_open: "Aberto agora · até {t}",
+  status_closed_today: "Fechado · abre hoje às {t}",
+  status_closed_tomorrow: "Fechado · abre amanhã às {t}",
+  status_closed_day: "Fechado · abre {d} às {t}",
+  closed_banner: "Estamos fechados agora. Abrimos {when}. Você pode montar o pedido e enviar a partir desse horário.",
+  closed_send: "Fora do horário de atendimento. O envio libera {when}.",
+  when_today: "hoje às {t}",
+  when_tomorrow: "amanhã às {t}",
+  when_day: "{d} às {t}",
+  hours_line: "Terça a domingo, {a} às {b} · segunda fechado",
 
   // sections
   sec_pizzas_eyebrow: "Forno a lenha",

@@ -18,7 +18,18 @@ export const businessConfig = {
   /** TODO: confirmar endereço e cidade. */
   address: "Av. Principal, 000 — Centro",
   city: "Bernardo de Irigoyen, Misiones",
-  hours: "Ter a Dom · 18h às 23h",
+  hours: "Ter a Dom · 14h às 23h45",
+
+  /**
+   * Horário de funcionamento. Fora dele o site avisa e não deixa enviar pedido.
+   * closedDays: 0 = domingo, 1 = segunda … 6 = sábado.
+   */
+  schedule: {
+    timezone: "America/Argentina/Buenos_Aires",
+    open: "14:00",
+    close: "23:45",
+    closedDays: [1],
+  },
 
   /** Taxa de entrega nas duas moedas. Zere as duas para não cobrar. */
   deliveryFee: { brl: 12, ars: 3500 } satisfies Price,

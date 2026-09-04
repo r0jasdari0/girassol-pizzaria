@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { siteImages } from "../data/images";
 import { usePrefs } from "../store/prefs";
 import { WhatsappIcon } from "./Icons";
+import { StatusPill } from "./OpenStatus";
 
 type Props = { onBuild: () => void };
 
@@ -87,6 +88,9 @@ export const Hero = ({ onBuild }: Props) => {
             }
           />
           <span className="eyebrow eyebrow--red hero__eyebrow">Pizzaria &amp; Açaí · Bernardo de Irigoyen</span>
+          <div className="hero__status">
+            <StatusPill />
+          </div>
           <p className="hero__text">{t.hero_text}</p>
           <div className="hero__ctas">
             <button type="button" className="btn btn--ink btn--xl" onClick={onBuild}>
