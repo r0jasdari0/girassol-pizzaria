@@ -114,7 +114,6 @@ export const PizzaBuilder = ({ initial, editing, onClose }: Props) => {
             name: s.name,
             meta: `${s.cm} cm · ${s.maxFlavors} ${s.maxFlavors === 1 ? t.flavor_one : t.flavor_many}`,
             price: fmt(s.price),
-            icon: <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />,
           }))}
         />
       </section>

@@ -99,7 +99,6 @@ export const Catalog = ({ onOpen }: Props) => {
           {sizes.map((s) => (
             <li key={s.id}>
               <button type="button" className="sizerow" onClick={() => onOpen({ kind: "pizza", sizeId: s.id })}>
-                <span className="sizechip__ring" style={{ ["--d" as string]: `${18 + (s.cm - 25) * 1.2}px` }} />
                 <span className="sizerow__text">
                   <span className="sizerow__name">{s.name}</span>
                   <span className="sizerow__meta">
