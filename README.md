@@ -107,8 +107,9 @@ enquadramento**: pizza inteira, vista de cima, centrada, mesma bandeja e luz.
    encontra a pizza, recorta um quadrado centrado e gera 1000×1000.
 3. Em `pizzas.ts`, envolva o sabor com `withPhoto(..., "pizzas/<id>")`.
 
-Hoje só Portuguesa, Frango com Catupiry e M&M têm foto (e são fotos em ângulo, só para
-demonstrar o efeito).
+Os 45 sabores já têm foto cenital gerada por IA (Higgsfield, nano_banana_pro) em
+`public/images/pizzas/<id>.jpg`, alinhadas pelo script. Para substituir por fotos reais da
+Girassol, basta gerar o JPG com o mesmo nome pelo mesmo script.
 
 ## Fotografia de produto
 

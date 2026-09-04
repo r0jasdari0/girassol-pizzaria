@@ -19,22 +19,29 @@ from PIL import Image, ImageChops, ImageFilter
 
 
 def find_pizza_box(im):
+    """Caixa da pizza: pixels bem diferentes do fundo, com erosão para ignorar sombras e ruído."""
     rgb = im.convert("RGB")
     w, h = rgb.size
     corners = [rgb.getpixel((x, y)) for x, y in ((2, 2), (w - 3, 2), (2, h - 3), (w - 3, h - 3))]
     bg = tuple(sum(c[i] for c in corners) // 4 for i in range(3))
     diff = ImageChops.difference(rgb, Image.new("RGB", rgb.size, bg)).convert("L")
-    mask = diff.point(lambda v: 255 if v > 40 else 0).filter(ImageFilter.MaxFilter(9))
-    return mask.getbbox() or (0, 0, w, h)
+    small = diff.resize((w // 4, h // 4))
+    mask = small.point(lambda v: 255 if v > 70 else 0).filter(ImageFilter.MinFilter(7)).filter(ImageFilter.MaxFilter(7))
+    b = mask.getbbox()
+    if not b:
+        return (0, 0, w, h)
+    return (b[0] * 4, b[1] * 4, b[2] * 4, b[3] * 4)
 
 
-def normalize(src, dst, size=1000, margin=0.04):
+def normalize(src, dst, size=1000, margin=0.03):
     im = Image.open(src).convert("RGB")
     x0, y0, x1, y1 = find_pizza_box(im)
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     side = max(x1 - x0, y1 - y0) * (1 + margin * 2)
-    box = (int(cx - side / 2), int(cy - side / 2), int(cx + side / 2), int(cy + side / 2))
-    im.crop(box).resize((size, size), Image.LANCZOS).save(dst, "JPEG", quality=84, optimize=True, progressive=True)
+    # canvas quadrado preto centrado na pizza (áreas fora da foto ficam pretas)
+    canvas = Image.new("RGB", (int(side), int(side)), (0, 0, 0))
+    canvas.paste(im, (int(side / 2 - cx), int(side / 2 - cy)))
+    canvas.resize((size, size), Image.LANCZOS).save(dst, "JPEG", quality=84, optimize=True, progressive=True)
 
 
 def main():

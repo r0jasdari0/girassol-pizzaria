@@ -2631,8 +2631,8 @@ small {
   }
   /* palco: mais alto que antes para caber o título e a legenda editável */
   .builder--sun .builder__stage .pizza__svg {
-    width: 150px !important;
-    height: 150px !important;
+    width: 176px !important;
+    height: 176px !important;
   }
   .builder--sun .builder__stage .pizza__title {
     font-size: 15px;

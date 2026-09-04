@@ -39,11 +39,11 @@ const f = (
   color,
   bits,
   available: true,
+  // Foto cenital gerada para o builder por fatias (public/images/pizzas/<id>.jpg).
+  photo: img(`pizzas/${id}`),
 });
 
 const withImg = (fl: PizzaFlavor, photo: string): PizzaFlavor => ({ ...fl, image: img(photo) });
-/** Foto para o builder por fatias. Ideal: pizza inteira vista de cima, centrada, fundo neutro. */
-const withPhoto = (fl: PizzaFlavor, photo: string): PizzaFlavor => ({ ...fl, photo: img(photo) });
 
 export const pizzaFlavors: PizzaFlavor[] = [
   // ── Salgadas ──
@@ -55,11 +55,11 @@ export const pizzaFlavors: PizzaFlavor[] = [
   f(6, "4-queijos", "4 Queijos", "Molho, mussarela, provolone, catupiry, cheddar, orégano.", "salgada", "#F7E7B0", "#E2A54A"),
   f(7, "5-queijos", "5 Queijos", "Molho, mussarela, provolone, catupiry, cheddar, parmesão e orégano.", "salgada", "#F8E9B8", "#D9994A"),
   f(8, "frango", "Frango", "Molho, frango, mussarela, orégano.", "salgada", "#F2E0B8", "#C9A26E"),
-  withPhoto(withImg(f(9, "frango-catupiry", "Frango com Catupiry", "Molho, frango, mussarela, catupiry, orégano.", "salgada", "#F4E6C4", "#D9B27A"), "pizza-frango-catupiry"), "pizza-frango-catupiry"),
+  withImg(f(9, "frango-catupiry", "Frango com Catupiry", "Molho, frango, mussarela, catupiry, orégano.", "salgada", "#F4E6C4", "#D9B27A"), "pizza-frango-catupiry"),
   f(10, "veneza", "Veneza", "Molho, frango, bacon, creme de leite, mussarela e orégano.", "salgada", "#F1DFB6", "#9A5A36"),
   f(11, "palmito", "Palmito", "Molho, mussarela, palmito, catupiry, orégano.", "salgada", "#F3E6C2", "#D8CBA3"),
   f(12, "lombo", "Lombo Canadense", "Molho, mussarela, lombo canadense, catupiry, orégano.", "salgada", "#F1DDB0", "#C4785A"),
-  withPhoto(withImg(f(13, "portuguesa", "Portuguesa", "Molho, presunto, ervilha, ovo, cebola, azeitona, mussarela e orégano.", "salgada", "#EFD79A", "#C97A4A"), "pizza-portuguesa"), "pizza-portuguesa"),
+  withImg(f(13, "portuguesa", "Portuguesa", "Molho, presunto, ervilha, ovo, cebola, azeitona, mussarela e orégano.", "salgada", "#EFD79A", "#C97A4A"), "pizza-portuguesa"),
   f(14, "gaucha", "Gaúcha", "Molho, presunto, calabresa, bacon, milho, ervilha, creme de leite, mussarela e orégano.", "salgada", "#EDD094", "#A54A32"),
   f(15, "bacon", "Bacon", "Molho, mussarela, bacon, orégano.", "salgada", "#F0D89A", "#8E4A2B"),
   f(16, "strogonoff-carne", "Strogonoff de Carne", "Molho, mussarela, carne de gado, creme de leite, batata palha e orégano.", "salgada", "#E4B98A", "#8C5A3C"),
@@ -84,7 +84,7 @@ export const pizzaFlavors: PizzaFlavor[] = [
   f(33, "dois-amores", "Dois Amores", "Leite condensado, chocolate preto e branco.", "doce", "#8B5A3C", "#F6EFDA"),
   f(34, "charge", "Charge", "Leite condensado, chocolate preto e amendoim.", "doce", "#5A3826", "#C9924A"),
   f(35, "sensacao", "Sensação", "Leite condensado, chocolate preto ou branco e morangos.", "doce", "#6B3A2A", "#D9452F"),
-  withPhoto(withImg(f(36, "mm", "M&M", "Leite condensado, chocolate preto e M&M.", "doce", "#6B3A2A", "#E6B422"), "pizza-doce-mm"), "pizza-doce-mm"),
+  withImg(f(36, "mm", "M&M", "Leite condensado, chocolate preto e M&M.", "doce", "#6B3A2A", "#E6B422"), "pizza-doce-mm"),
   f(37, "marshmallow", "Marshmallow", "Leite condensado, chocolate preto e marshmallow.", "doce", "#7A4A34", "#FFFFFF"),
   f(38, "doce-da-casa", "Da Casa", "Leite condensado, chocolate preto, M&M, amendoim e marshmallow.", "doce", "#7A4A34", "#F2C230"),
   f(39, "bis", "Bis", "Leite condensado, chocolate preto ou branco e Bis.", "doce", "#5A3826", "#3A2418"),
