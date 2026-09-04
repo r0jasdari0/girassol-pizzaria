@@ -63,6 +63,7 @@ export const pt = {
   customize: "Personalizar",
   unavailable: "Indisponível",
   footer_note: "Preços em reais e pesos. Confirmação do pedido pelo WhatsApp.",
+  footer_credit: "Proposta demonstrativa desenvolvida por Impulso360",
 
   // pizza builder
   pb_title: "Monte sua pizza",

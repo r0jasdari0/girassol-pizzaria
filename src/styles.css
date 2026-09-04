@@ -3057,3 +3057,12 @@ small {
     padding-bottom: 20px;
   }
 }
+
+.catalog__credit {
+  margin-top: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}

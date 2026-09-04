@@ -62,6 +62,7 @@ export const es: Dict = {
   customize: "Personalizar",
   unavailable: "No disponible",
   footer_note: "Precios en reales y pesos. Confirmación del pedido por WhatsApp.",
+  footer_credit: "Propuesta demostrativa desarrollada por Impulso360",
 
   pb_title: "Armá tu pizza",
   pb_step_size: "Tamaño",

@@ -242,6 +242,7 @@ export const Catalog = ({ onOpen }: Props) => {
 
       <footer className="catalog__foot">
         <p>{t.footer_note}</p>
+        <p className="catalog__credit">{t.footer_credit}</p>
       </footer>
     </main>
   );
