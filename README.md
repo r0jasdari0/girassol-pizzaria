@@ -1,5 +1,10 @@
 # Girassol Pizzaria & Açaí — pedidos interativos pelo WhatsApp
 
+**Site publicado:** https://r0jasdari0.github.io/girassol-pizzaria/
+
+Cada `git push` na branch `main` publica automaticamente (GitHub Actions → GitHub Pages).
+Repositório: https://github.com/r0jasdari0/girassol-pizzaria
+
 Experiência de pedido mobile-first para a região de fronteira Argentina–Brasil.
 O cliente **monta** a pizza e o açaí visualmente, revisa o carrinho e envia o pedido
 pronto para o WhatsApp da Girassol. Não há backend: o WhatsApp é o canal de conversão.
@@ -16,6 +21,17 @@ Build de produção em `dist/`:
 ```bash
 npm run build
 ```
+
+## Publicar mudanças
+
+```bash
+git add -A
+git commit -m "descrição da mudança"
+git push
+```
+
+Em 1–2 minutos o site atualiza. Para usar um domínio próprio (ex.: girassol.com.ar), configure o
+domínio em *Settings → Pages* no GitHub e troque a `base` em `vite.config.ts` para `"/"`.
 
 Stack: Vite + React 18 + TypeScript + Framer Motion. Sem Tailwind: os tokens do design
 system vivem em [src/styles.css](src/styles.css) (`:root`).
