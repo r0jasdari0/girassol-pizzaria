@@ -71,11 +71,22 @@ export const Hero = ({ onBuild }: Props) => {
     <section className="hero" id="top">
       <div className="hero__inner">
         <div className="hero__copy">
-          <span className="eyebrow eyebrow--red">Pizzaria &amp; Açaí · Bernardo de Irigoyen</span>
-          <h1 className="hero__title">
-            <span>{t.hero_title_1}</span>
-            <span className="hero__title-accent">{t.hero_title_2}</span>
-          </h1>
+          <motion.img
+            className="hero__brand"
+            src={siteImages.logo}
+            alt="Girassol Pizzaria"
+            width={1200}
+            height={893}
+            fetchPriority="high"
+            initial={reduce ? false : { opacity: 0, y: 12, scale: 0.96 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -5, 0], scale: 1 }}
+            transition={
+              reduce
+                ? { duration: 0.3 }
+                : { opacity: { duration: 0.5 }, scale: { duration: 0.5 }, y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 } }
+            }
+          />
+          <span className="eyebrow eyebrow--red hero__eyebrow">Pizzaria &amp; Açaí · Bernardo de Irigoyen</span>
           <p className="hero__text">{t.hero_text}</p>
           <div className="hero__ctas">
             <button type="button" className="btn btn--ink btn--xl" onClick={onBuild}>
@@ -97,24 +108,6 @@ export const Hero = ({ onBuild }: Props) => {
           transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
         >
           <div className="hero__disc" aria-hidden />
-          <motion.img
-            className="hero__logo"
-            src={siteImages.logo}
-            alt="Girassol Pizzaria"
-            width={1200}
-            height={893}
-            initial={reduce ? false : { opacity: 0, y: -16, rotate: -10 }}
-            animate={reduce ? { opacity: 1 } : { opacity: 1, y: [0, -8, 0], rotate: [-6, -3.5, -6] }}
-            transition={
-              reduce
-                ? { duration: 0.3 }
-                : {
-                    opacity: { duration: 0.6, delay: 0.3 },
-                    y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 },
-                    rotate: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.6 },
-                  }
-            }
-          />
           <img
             className="hero__photo"
             src={siteImages.heroPizza}
@@ -123,10 +116,10 @@ export const Hero = ({ onBuild }: Props) => {
             height={1200}
             fetchPriority="high"
           />
-          <Floating x="70%" y="-4%" delay={0} size={52}>
+          <Floating x="-4%" y="12%" delay={0} size={56}>
             <Tomato />
           </Floating>
-          <Floating x="92%" y="24%" delay={0.8} size={46}>
+          <Floating x="84%" y="6%" delay={0.8} size={48}>
             <Basil />
           </Floating>
           <Floating x="88%" y="70%" delay={0.4} size={50}>
