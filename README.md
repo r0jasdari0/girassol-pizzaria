@@ -56,8 +56,8 @@ P/M/G (adicionais com preço próprio), porções, carnes e combos.
 Os sabores **VIP** e **Doces VIP** aparecem como "Consultar valor", igual ao cardápio: entram no
 pedido sem acréscimo e a mensagem avisa a Girassol para confirmar.
 
-Ainda provisórios: **bebidas** (não constam no cardápio), Fini e pasta de amendoim no copo
-(valores assumidos) e o endereço da loja. O cardápio também traz um WhatsApp brasileiro
+Bebidas conforme o banner enviado pela Girassol. Ainda provisórios: Fini e pasta de amendoim no
+copo (valores assumidos) e o endereço da loja. O cardápio também traz um WhatsApp brasileiro
 (49 9 9978-6851); o site envia tudo para o argentino configurado.
 
 ## Regras de preço
@@ -82,6 +82,27 @@ Ainda provisórios: **bebidas** (não constam no cardápio), Fini e pasta de ame
    Pagamento em reais: Dinheiro ou PIX. Em pesos: Efectivo ou Transferencia.
 6. **Enviar pedido pelo WhatsApp** abre `wa.me/<número>?text=<pedido>`; a tela seguinte
    oferece reabrir o WhatsApp e copiar o texto.
+
+## Carrossel de destaques (home, abaixo do logo)
+
+Os banners ficam em `public/banners/` e a lista com o destino de cada um em
+[src/data/banners.ts](src/data/banners.ts). Nomes esperados:
+
+| Arquivo        | Leva para   |
+| -------------- | ----------- |
+| `combo-1.jpg`  | Combos      |
+| `combo-2.jpg`  | Combos      |
+| `acai.jpg`     | Açaí        |
+| `picadas.jpg`  | Picadas     |
+| `bebidas.jpg`  | Bebidas     |
+
+Para usar as artes oficiais: salve os arquivos originais (PNG/JPG) em uma pasta `banners-src/`
+e rode `python scripts/prepare-banners.py banners-src/ public/banners/`. O script converte para
+JPG, limita a 1600 px de largura e mantém os nomes. Enquanto isso, o carrossel usa fotos
+provisórias com esses mesmos nomes.
+
+O carrossel avança sozinho a cada 4,5 s, pausa ao tocar, aceita arrasto, tem pontos de
+navegação e setas no desktop. Proporção 4:3 (artes verticais são recortadas ao centro).
 
 ## Pizza com fotos reais no builder (por fatias)
 

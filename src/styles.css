@@ -2764,3 +2764,116 @@ small {
   overflow: hidden;
   clip: rect(0 0 0 0);
 }
+
+/* ═══ Carrossel de destaques ═══ */
+.carousel {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 14px 30px rgba(22, 16, 6, 0.22);
+  background: var(--ink);
+}
+.carousel__track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+.carousel__slide {
+  position: relative;
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  aspect-ratio: 4 / 3;
+  display: block;
+  text-decoration: none;
+}
+.carousel__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.carousel__cta {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px 8px 14px;
+  border-radius: 999px;
+  background: rgba(22, 16, 6, 0.82);
+  color: var(--sun);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  backdrop-filter: blur(6px);
+}
+.carousel__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.carousel__dot {
+  pointer-events: auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.carousel__dot.is-on {
+  width: 22px;
+  background: var(--sun);
+}
+.carousel__arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  place-items: center;
+  box-shadow: var(--shadow-sm);
+}
+.carousel__arrow--prev {
+  left: 10px;
+}
+.carousel__arrow--prev svg {
+  transform: rotate(180deg);
+}
+.carousel__arrow--next {
+  right: 10px;
+}
+@media (hover: hover) and (min-width: 600px) {
+  .carousel__arrow {
+    display: grid;
+  }
+}
+@media (min-width: 900px) {
+  .carousel {
+    max-width: 520px;
+  }
+}
+.picadas {
+  margin-top: 36px;
+}
+.picadas .sec__subtitle {
+  scroll-margin-top: var(--nav-h);
+}

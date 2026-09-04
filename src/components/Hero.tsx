@@ -3,6 +3,7 @@ import { siteImages } from "../data/images";
 import { usePrefs } from "../store/prefs";
 import { WhatsappIcon } from "./Icons";
 import { StatusPill } from "./OpenStatus";
+import { Carousel } from "./Carousel";
 
 type Props = { onBuild: () => void };
 
@@ -91,6 +92,7 @@ export const Hero = ({ onBuild }: Props) => {
           <div className="hero__status">
             <StatusPill />
           </div>
+          <Carousel />
           <p className="hero__text">{t.hero_text}</p>
           <div className="hero__ctas">
             <button type="button" className="btn btn--ink btn--xl" onClick={onBuild}>

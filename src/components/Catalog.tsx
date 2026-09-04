@@ -226,7 +226,11 @@ export const Catalog = ({ onOpen }: Props) => {
             </article>
           ))}
         </div>
-        <SimpleList items={otherCombos} />
+        <div className="picadas" id="picadas">
+          <h3 className="sec__subtitle">{t.sec_picadas_title}</h3>
+          <p className="sec__text">{t.sec_picadas_text}</p>
+          <SimpleList items={otherCombos} />
+        </div>
       </section>
 
       {/* ── BEBIDAS ── */}

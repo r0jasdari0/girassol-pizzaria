@@ -21,6 +21,7 @@ const photos: Record<string, string> = {
   "girassol-familia": "girassol-familia",
   "refri-225": "refri-225",
   "refri-15": "refri-225",
+  "refri-600": "refri-225",
   "refri-lata": "refri-lata",
   agua: "agua",
   suco: "suco",
@@ -81,13 +82,14 @@ export const combos: SimpleProduct[] = [
   p("combos", "da-casa", "Da Casa", undefined, 85, 25000),
 ];
 
-/** TODO: bebidas e preços não constam no cardápio recebido — valores provisórios. */
+/** Bebidas conforme o banner da Girassol (2026-09-04). */
 export const drinks: SimpleProduct[] = [
-  p("bebidas", "refri-225", "Refrigerante", "2,25 L", 15, 4500),
-  p("bebidas", "refri-15", "Refrigerante", "1,5 L", 12, 3500),
-  p("bebidas", "refri-lata", "Refrigerante", "Lata 350 ml", 6, 1800),
-  p("bebidas", "agua", "Água mineral", "500 ml", 4, 1200),
-  p("bebidas", "suco", "Suco natural", "500 ml", 10, 3000),
+  p("bebidas", "refri-lata", "Refrigerante", "Lata", 8, 2500),
+  p("bebidas", "refri-600", "Refrigerante", "600 ml", 12, 3500),
+  p("bebidas", "refri-15", "Refrigerante", "1,5 L", 18, 5500),
+  p("bebidas", "refri-225", "Refrigerante", "2,25 L", 25, 8000),
+  p("bebidas", "agua", "Água mineral", undefined, 6, 2000),
+  p("bebidas", "suco", "Suco / Jugo", undefined, 10, 3000),
 ];
 
 export const simpleProducts: SimpleProduct[] = [...portions, ...meats, ...combos, ...drinks];
